@@ -43,6 +43,14 @@
             <artifactId>jaybird</artifactId>
             <version>5.0.6.java11</version>
         </dependency>
+
+        <!-- Lombok: генерирует getter/setter/constructor во время компиляции -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.46</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
