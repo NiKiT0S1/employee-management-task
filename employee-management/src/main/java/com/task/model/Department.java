@@ -15,8 +15,8 @@ public class Department {
     private String departmentName;
     private String departmentPhone;
     private String departmentEmail;
-    private Integer head_id; // Значение может быть NULL, поэтому Integer
+    private Integer headId; // Значение может быть NULL, поэтому Integer
 
-    private String head_name;
+    private String headName;
     private int employeesCount;
 }
