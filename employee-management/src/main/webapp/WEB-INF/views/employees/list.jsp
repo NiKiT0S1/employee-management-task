@@ -10,7 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
+
 <div class="container mt-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22,7 +23,8 @@
         </a>
     </div>
 
-    <a href="${pageContext.request.contextPath}/" class="btn btn-secondary mb-3">
+    <a href="${pageContext.request.contextPath}/"
+       class="btn btn-secondary mb-3">
         На главную
     </a>
 
@@ -32,60 +34,74 @@
         </div>
     </c:if>
 
-    <table class="table table-bordered table-striped align-middle">
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>ФИО</th>
-            <th>Отдел</th>
-            <th>Должность</th>
-            <th>Зарплата</th>
-            <th>Статус</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-        <tbody>
-        <c:forEach var="employee" items="${employees}">
-            <tr>
-                <td>${employee.id}</td>
-                <td>${employee.fullName}</td>
-                <td>${employee.departmentName}</td>
-                <td>${employee.positionName}</td>
-                <td>${employee.positionSalary}</td>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>ФИО</th>
+                        <th>Отдел</th>
+                        <th>Должность</th>
+                        <th>Зарплата</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
 
-                <td>
-                    <c:choose>
-                        <c:when test="${employee.headOfDepartment}">
-                            <span class="badge bg-success">Начальник отдела</span>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="badge bg-secondary">Сотрудник</span>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
+                    <tbody>
+                    <c:forEach var="employee" items="${employees}">
+                        <tr>
+                            <td>${employee.id}</td>
+                            <td>${employee.fullName}</td>
+                            <td>${employee.departmentName}</td>
+                            <td>${employee.positionName}</td>
+                            <td>${employee.positionSalary}</td>
 
-                <td>
-                    <a href="${pageContext.request.contextPath}/employees?action=edit&id=${employee.id}"
-                       class="btn btn-warning btn-sm">
-                        Редактировать
-                    </a>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${employee.headOfDepartment}">
+                                        <span class="badge bg-success">
+                                            Начальник отдела
+                                        </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="badge bg-secondary">
+                                            Сотрудник
+                                        </span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
 
-                    <form action="${pageContext.request.contextPath}/employees?action=delete&id=${employee.id}"
-                          method="post"
-                          style="display:inline;">
-                        <button type="submit"
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('Вы уверены, что хотите удалить сотрудника?');">
-                            Удалить
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="${pageContext.request.contextPath}/employees?action=edit&id=${employee.id}"
+                                       class="btn btn-warning btn-sm">
+                                        Редактировать
+                                    </a>
+
+                                    <form action="${pageContext.request.contextPath}/employees?action=delete&id=${employee.id}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Вы уверены, что хотите удалить сотрудника?');">
+                                            Удалить
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
 
 </div>
+
 </body>
 </html>

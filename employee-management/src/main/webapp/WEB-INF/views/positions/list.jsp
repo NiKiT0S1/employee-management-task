@@ -10,7 +10,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
+
 <div class="container mt-5">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22,7 +23,8 @@
     </a>
   </div>
 
-  <a href="${pageContext.request.contextPath}/" class="btn btn-secondary mb-3">
+  <a href="${pageContext.request.contextPath}/"
+     class="btn btn-secondary mb-3">
     На главную
   </a>
 
@@ -32,43 +34,54 @@
     </div>
   </c:if>
 
-  <table class="table table-bordered table-striped align-middle">
-    <thead class="table-dark">
-    <tr>
-      <th>ID</th>
-      <th>Название должности</th>
-      <th>Зарплата</th>
-      <th>Действия</th>
-    </tr>
-    </thead>
+  <div class="card shadow-sm">
+    <div class="card-body">
 
-    <tbody>
-    <c:forEach var="position" items="${positions}">
-      <tr>
-        <td>${position.id}</td>
-        <td>${position.positionName}</td>
-        <td>${position.positionSalary}</td>
-        <td>
-          <a href="${pageContext.request.contextPath}/positions?action=edit&id=${position.id}"
-             class="btn btn-warning btn-sm">
-            Редактировать
-          </a>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+          <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Название должности</th>
+            <th>Зарплата</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
 
-          <form action="${pageContext.request.contextPath}/positions?action=delete&id=${position.id}"
-                method="post"
-                style="display:inline;">
-            <button type="submit"
-                    class="btn btn-danger btn-sm"
-                    onclick="return confirm('Вы уверены, что хотите удалить должность?');">
-              Удалить
-            </button>
-          </form>
-        </td>
-      </tr>
-    </c:forEach>
-    </tbody>
-  </table>
+          <tbody>
+          <c:forEach var="position" items="${positions}">
+            <tr>
+              <td>${position.id}</td>
+              <td>${position.positionName}</td>
+              <td>${position.positionSalary}</td>
+
+              <td>
+                <div class="d-flex gap-2">
+                  <a href="${pageContext.request.contextPath}/positions?action=edit&id=${position.id}"
+                     class="btn btn-warning btn-sm">
+                    Редактировать
+                  </a>
+
+                  <form action="${pageContext.request.contextPath}/positions?action=delete&id=${position.id}"
+                        method="post">
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Вы уверены, что хотите удалить должность?');">
+                      Удалить
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </c:forEach>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
 
 </div>
+
 </body>
 </html>
