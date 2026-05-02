@@ -215,4 +215,29 @@ public class DepartmentDao {
         // Возвращаем заполненный объект Department - данные отдела
         return department;
     }
+
+    // Метод для проверки факта назначения сотрудника Начальником какого-либо отдела
+    public boolean existsByHeadId(int employeeId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM departments WHERE head_id = ?";
+
+        // Подключение к БД
+        try (Connection connection = DatabaseConnection.getConnection();
+             // Сохраняем sql-запрос
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Подставляем id сотрудника под ?
+            statement.setInt(1, employeeId);
+
+            // Выполняем String sql в БД
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Возвращаем true, если сотрудник - Начальник отдела
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+
+        // Если сотрудник не Начальник - то возвращаем false
+        return false;
+    }
 }

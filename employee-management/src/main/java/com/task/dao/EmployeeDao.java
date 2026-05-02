@@ -185,4 +185,54 @@ public class EmployeeDao {
         // Возвращаем заполненный объект Employee - данные сотрудника
         return employee;
     }
+
+    // Метод для подсчета количества сотрудников отдела
+    public int countByDepartmentId(int departmentId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM employees WHERE department_id = ?";
+
+        // Подключение к БД
+        try (Connection connection = DatabaseConnection.getConnection();
+             // Сохраняем sql-запрос
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Подставляем id отдела под ?
+            statement.setInt(1, departmentId);
+
+            // Выполняем String sql в БД
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Возвращаем количество сотрудников
+                    return resultSet.getInt(1);
+                }
+            }
+        }
+
+        // Если сотрудников в отделе нет - то возвращаем 0
+        return 0;
+    }
+
+    // Метод для подсчета количества сотрудников, привязанных к должности
+    public int countByPositionId(int positionId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM employees WHERE position_id = ?";
+
+        // Подключение к БД
+        try (Connection connection = DatabaseConnection.getConnection();
+             // Сохраняем sql-запрос
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Подставляем id должности под ?
+            statement.setInt(1, positionId);
+
+            // Выполняем String sql в БД
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Возвращаем количество сотрудников
+                    return resultSet.getInt(1);
+                }
+            }
+        }
+
+        // Если нет сотрудников, привязанных к должности - то возвращаем 0
+        return 0;
+    }
 }
