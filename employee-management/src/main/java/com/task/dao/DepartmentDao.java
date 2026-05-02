@@ -167,6 +167,9 @@ public class DepartmentDao {
                 statement.setNull(4, java.sql.Types.INTEGER);
             }
 
+            // Подставляем id отдела, который нужно обновить
+            statement.setInt(5, department.getId());
+
             // Изменяем данные существующей строки в departments
             statement.executeUpdate();
         }

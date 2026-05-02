@@ -196,7 +196,7 @@ public class PositionServlet extends HttpServlet {
         position.setPositionName(request.getParameter("positionName"));
 
         // Зарплата приходит из формы в виде String, поэтому преобразуем ее в BigDecimal
-        position.setPositionSalary(new BigDecimal(request.getParameter("salary")));
+        position.setPositionSalary(new BigDecimal(request.getParameter("positionSalary")));
 
         // Возвращаем объект
         return position;
