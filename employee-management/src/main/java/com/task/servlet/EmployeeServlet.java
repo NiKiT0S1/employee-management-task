@@ -212,6 +212,9 @@ public class EmployeeServlet extends HttpServlet {
         // positionId приходит из формы в виде String, поэтому преобразуем его в int
         employee.setPositionId(Integer.parseInt(request.getParameter("positionId")));
 
+        // Если checkbox отмечен, сотрудник назначается Начальником отдела
+        employee.setHeadOfDepartment(request.getParameter("headOfDepartment") != null);
+
         // Возвращаем объект
         return employee;
     }

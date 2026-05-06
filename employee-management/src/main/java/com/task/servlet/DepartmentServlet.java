@@ -2,7 +2,6 @@ package com.task.servlet;
 
 import com.task.model.Department;
 import com.task.service.DepartmentService;
-import com.task.service.EmployeeService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +15,8 @@ import java.sql.SQLException;
 @WebServlet("/departments")
 public class DepartmentServlet extends HttpServlet {
 
-    // Создание объектов Service-классов для работы с логикой взаимодействия над отделами
+    // Создание объекта Service-класса для работы с логикой взаимодействия над отделами
     private final DepartmentService departmentService = new DepartmentService();
-    private final EmployeeService employeeService = new EmployeeService();
 
     // Метод для обработки GET-запросов
     @Override
@@ -116,8 +114,6 @@ public class DepartmentServlet extends HttpServlet {
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         // Создание пустого объекта Department для работы с добавлением отдела
         request.setAttribute("department", new Department());
-        // Получаем список сотрудников для назначения Начальника
-        request.setAttribute("employees", employeeService.findAll());
         // Сохраняем действие JSP-формы - добавляем новый отдел
         request.setAttribute("formAction", "save");
 
@@ -142,7 +138,6 @@ public class DepartmentServlet extends HttpServlet {
 
         // Если отдел найден - передаем на JSP-страницу формы для редактирования (используем все тот же объект department, выводим список сотрудников, обновляем существующий отдел)
         request.setAttribute("department", department);
-        request.setAttribute("employees", employeeService.findAll());
         request.setAttribute("formAction", "update");
 
         // Передаем запрос на JSP-страницу формы отдела
@@ -199,9 +194,6 @@ public class DepartmentServlet extends HttpServlet {
         department.setDepartmentPhone(request.getParameter("departmentPhone"));
         department.setDepartmentEmail(request.getParameter("departmentEmail"));
 
-        // headId может быть NULL, поэтому оборачиваем в другой метод
-        department.setHeadId(parseNullableInteger(request.getParameter("headId")));
-
         // Возвращаем объект
         return department;
     }
@@ -209,16 +201,5 @@ public class DepartmentServlet extends HttpServlet {
     // Метод для преобразования id отдела, полученного из HTTP-запроса формы из String в int
     private int parseId(HttpServletRequest request) {
         return Integer.parseInt(request.getParameter("id"));
-    }
-
-    // Метод для преобразования строки в оберточный класс Integer
-    private Integer parseNullableInteger(String value) {
-        // Если значение пустое - значит NULL
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-
-        // Если значение имеется, то преобразуем его в Integer
-        return Integer.parseInt(value);
     }
 }

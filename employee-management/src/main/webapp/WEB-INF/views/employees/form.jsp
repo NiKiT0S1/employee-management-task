@@ -79,6 +79,18 @@
           </select>
         </div>
 
+        <div class="form-check mb-3">
+          <input class="form-check-input"
+                 type="checkbox"
+                 id="headOfDepartment"
+                 name="headOfDepartment"
+                 <c:if test="${employee.headOfDepartment}">checked</c:if>>
+
+          <label class="form-check-label" for="headOfDepartment">
+            Назначить начальником отдела
+          </label>
+        </div>
+
         <button type="submit" class="btn btn-success">
           Сохранить
         </button>

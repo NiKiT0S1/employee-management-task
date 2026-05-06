@@ -20,17 +20,15 @@ public class EmployeeDao {
                     e.full_name,
                     e.department_id,
                     e.position_id,
+                    e.is_department_head,
                     d.department_name,
                     p.position_name,
-                    p.position_salary,
-                    hd.id AS headed_department_id
+                    p.position_salary
                 FROM employees e
                 JOIN departments d ON e.department_id = d.id
                 JOIN positions p ON e.position_id = p.id
-                LEFT JOIN departments hd ON hd.head_id = e.id
                 ORDER BY e.id
                 """;
-
         // Создание пустого списка
         List<Employee> employees = new ArrayList<>();
 
@@ -60,14 +58,13 @@ public class EmployeeDao {
                     e.full_name,
                     e.department_id,
                     e.position_id,
+                    e.is_department_head,
                     d.department_name,
                     p.position_name,
-                    p.position_salary,
-                    hd.id AS headed_department_id
+                    p.position_salary
                 FROM employees e
                 JOIN departments d ON e.department_id = d.id
                 JOIN positions p ON e.position_id = p.id
-                LEFT JOIN departments hd ON hd.head_id = e.id
                 WHERE e.id = ?
                 """;
 
@@ -98,9 +95,10 @@ public class EmployeeDao {
                 INSERT INTO employees (
                     full_name,
                     department_id,
-                    position_id
+                    position_id,
+                    is_department_head
                 )
-                VALUES (?, ?, ?)
+                VALUES (?, ?, ?, ?)
                 """;
 
         // Подключение к БД
@@ -112,6 +110,7 @@ public class EmployeeDao {
             statement.setString(1, employee.getFullName());
             statement.setInt(2, employee.getDepartmentId());
             statement.setInt(3, employee.getPositionId());
+            statement.setInt(4, employee.isHeadOfDepartment() ? 1 : 0);
 
             // Вносим новую строку в таблицу employees
             statement.executeUpdate();
@@ -125,7 +124,8 @@ public class EmployeeDao {
                 SET
                     full_name = ?,
                     department_id = ?,
-                    position_id = ?
+                    position_id = ?,
+                    is_department_head = ?
                 WHERE id = ?
                 """;
 
@@ -138,7 +138,8 @@ public class EmployeeDao {
             statement.setString(1, employee.getFullName());
             statement.setInt(2, employee.getDepartmentId());
             statement.setInt(3, employee.getPositionId());
-            statement.setInt(4, employee.getId());
+            statement.setInt(4, employee.isHeadOfDepartment() ? 1 : 0);
+            statement.setInt(5, employee.getId());
 
             // Изменяем данные существующей строки в employees
             statement.executeUpdate();
@@ -176,11 +177,7 @@ public class EmployeeDao {
         employee.setDepartmentName(resultSet.getString("department_name"));
         employee.setPositionName(resultSet.getString("position_name"));
         employee.setPositionSalary(resultSet.getBigDecimal("position_salary"));
-
-        // Фиксируем id сотрудника, который является Начальником отдела
-        resultSet.getInt("headed_department_id");
-        // Если сотрудник не Начальник - будет значение поля NULL
-        employee.setHeadOfDepartment(!resultSet.wasNull());
+        employee.setHeadOfDepartment(resultSet.getInt("is_department_head") == 1);
 
         // Возвращаем заполненный объект Employee - данные сотрудника
         return employee;
@@ -234,5 +231,67 @@ public class EmployeeDao {
 
         // Если нет сотрудников, привязанных к должности - то возвращаем 0
         return 0;
+    }
+
+    // Метод для проверки, есть ли уже начальник у отдела
+    public boolean existsHeadByDepartmentId(int departmentId) throws SQLException {
+        String sql = """
+                SELECT COUNT(*)
+                FROM employees
+                WHERE department_id = ?
+                  AND is_department_head = 1
+                """;
+
+        // Подключение к БД
+        try (Connection connection = DatabaseConnection.getConnection();
+             // Сохраняем sql-запрос
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Подставляем id отдела под ?
+            statement.setInt(1, departmentId);
+
+            // Выполняем String sql в БД
+            try (ResultSet resultSet = statement.executeQuery()) {
+                // Возвращаем true, если у отдела есть Начальник
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+
+        // Если Начальник не назначен - то возвращаем false
+        return false;
+    }
+
+    // Метод для проверки, есть ли другой начальник у отдела, кроме текущего сотрудника (метод для редактирования)
+    public boolean existsAnotherHeadByDepartmentId(int departmentId, int employeeId) throws SQLException {
+        String sql = """
+                SELECT COUNT(*)
+                FROM employees
+                WHERE department_id = ?
+                  AND is_department_head = 1
+                  AND id <> ?
+                """;
+
+        // Подключение к БД
+        try (Connection connection = DatabaseConnection.getConnection();
+             // Сохраняем sql-запрос
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Подставляем id под ?
+            statement.setInt(1, departmentId);
+            statement.setInt(2, employeeId);
+
+            // Выполняем String sql в БД
+            try (ResultSet resultSet = statement.executeQuery()) {
+                // Возвращаем true, если у отдела есть Начальник
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+
+        // Если Начальник не назначен - то возвращаем false
+        return false;
     }
 }

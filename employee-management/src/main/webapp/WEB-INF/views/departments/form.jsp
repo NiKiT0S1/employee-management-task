@@ -65,20 +65,6 @@
                  required>
         </div>
 
-        <div class="mb-3">
-          <label for="headId" class="form-label">Начальник отдела</label>
-          <select class="form-select" id="headId" name="headId">
-            <option value="">Не назначен</option>
-
-            <c:forEach var="employee" items="${employees}">
-              <option value="${employee.id}"
-                      <c:if test="${department.headId == employee.id}">selected</c:if>>
-                  ${employee.fullName}
-              </option>
-            </c:forEach>
-          </select>
-        </div>
-
         <button type="submit" class="btn btn-success">
           Сохранить
         </button>
